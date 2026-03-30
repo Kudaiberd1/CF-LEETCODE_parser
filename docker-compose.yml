@@ -1,17 +1,31 @@
-version: '3.8'
+# Full stack: API (3000) + dashboard (8080)
+# From repo root:
+#   docker compose up --build
+#
+# If the browser is not on the same machine, set the API URL the browser will use:
+#   VITE_API_BASE=http://192.168.1.5:3000 docker compose up --build
 
 services:
-  app:
-    build: .
-    container_name: alfa-leetcode-api-docker
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: alfa-leetcode-api
     ports:
-      - '3000:3000'
-    restart: always
+      - "3000:3000"
+    restart: unless-stopped
     environment:
-      - WDS_SOCKET_HOST=127.0.0.1 
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    command: npm run dev
+      - PORT=3000
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE: ${VITE_API_BASE:-http://localhost:3000}
+    container_name: alfa-dashboard-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    depends_on:
+      - api

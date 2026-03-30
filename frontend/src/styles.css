@@ -1,0 +1,556 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: #1f2937;
+  background: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f8fafc;
+}
+
+.page {
+  min-height: 100vh;
+  padding: 14px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.platform-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.platform-btn {
+  border: 1px solid #d7dee8;
+  background: #fff;
+  color: #475569;
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.platform-btn.active {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #fff;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.search-row input {
+  flex: 1;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #d8dee8;
+  font-size: 14px;
+}
+
+.search-row button {
+  border: none;
+  border-radius: 10px;
+  background: #f97316;
+  color: white;
+  padding: 0 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.status {
+  color: #334155;
+  margin: 6px 0 10px;
+}
+
+.status.error {
+  color: #b91c1c;
+}
+
+.grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.top-grid {
+  grid-template-columns: 2fr 1fr;
+}
+
+.middle-grid {
+  grid-template-columns: 1.25fr 0.7fr 1.5fr;
+}
+
+.card {
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid #eef2f7;
+  padding: 12px 14px;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+}
+
+.label {
+  color: #64748b;
+  font-size: 13px;
+  margin: 0;
+}
+
+h2,
+h3,
+h4,
+p {
+  margin: 0;
+}
+
+.metrics-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.metrics-row h2 {
+  margin-top: 2px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.metrics-row h3 {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.chart-wrap {
+  margin-top: 6px;
+  height: 96px;
+}
+
+.top-card h2 {
+  margin-top: 2px;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.solved-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gauge-wrap {
+  width: 140px;
+  height: 140px;
+}
+
+.gauge-title {
+  font-size: 24px;
+  margin: 0;
+  line-height: 1;
+}
+
+.gauge-title span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.gauge-subtitle {
+  font-size: 16px;
+  margin: 0;
+}
+
+.attempting {
+  color: #64748b;
+  font-size: 16px;
+}
+
+.difficulty-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.diff {
+  background: #fafafa;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.diff p {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.diff h4 {
+  margin-top: 0;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.easy p { color: #14b8a6; }
+.med p { color: #f59e0b; }
+.hard p { color: #ef4444; }
+
+.badge-card h2 {
+  font-size: 28px;
+  margin-top: 2px;
+  word-break: break-word;
+}
+
+.badge-card .muted {
+  margin-top: 16px;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.badge-card h4 {
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.calendar-card h3 {
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.calendar-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 14px;
+}
+
+.calendar-summary {
+  display: flex;
+  gap: 22px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.calendar-lib {
+  margin-top: 10px;
+}
+
+.react-calendar-heatmap text {
+  font-size: 10px;
+  fill: #94a3b8;
+}
+
+.react-calendar-heatmap .color-empty {
+  fill: #f3f4f6;
+}
+
+.react-calendar-heatmap .color-scale-1 {
+  fill: #dcfce7;
+}
+
+.react-calendar-heatmap .color-scale-2 {
+  fill: #86efac;
+}
+
+.react-calendar-heatmap .color-scale-3 {
+  fill: #22c55e;
+}
+
+.react-calendar-heatmap .color-scale-4 {
+  fill: #16a34a;
+}
+
+@media (max-width: 1200px) {
+  .top-grid,
+  .middle-grid {
+    grid-template-columns: 1fr;
+  }
+  .solved-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .calendar-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .calendar-summary {
+    font-size: 14px;
+  }
+  .calendar-card h3 {
+    font-size: 18px;
+  }
+  .badge-card .muted,
+  .badge-card h4 {
+    font-size: 16px;
+  }
+}
+
+/* ----- Codeforces tab (profile-style layout) ----- */
+.page.cf-page {
+  background: #f0f2f5;
+}
+
+.page.cf-page .container {
+  max-width: 1100px;
+}
+
+.platform-btn-cf.active {
+  background: #1991eb;
+  border-color: #1991eb;
+  color: #fff;
+}
+
+.search-row-cf button {
+  background: #1991eb;
+}
+
+.cf-mode-row {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.cf-mode-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-right: 6px;
+}
+
+.cf-chip {
+  border: 1px solid #c7d3e3;
+  background: #fff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.cf-chip.active {
+  background: #1991eb;
+  border-color: #1991eb;
+  color: #fff;
+}
+
+.cf-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-left-width: 4px;
+  border-radius: 8px;
+  padding: 16px 18px;
+  margin-bottom: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.cf-avatar {
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.cf-avatar-placeholder {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}
+
+.cf-header-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.cf-handle {
+  font-size: 1.65rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.cf-meta,
+.cf-country {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.cf-max-rank {
+  color: #334155;
+}
+
+.cf-rating-block {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.cf-rating-label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #94a3b8;
+}
+
+.cf-rating-value {
+  display: block;
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cf-max-rating-label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.cf-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+@media (max-width: 900px) {
+  .cf-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.cf-stat {
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  padding: 10px 12px;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.cf-stat-label {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.cf-stat-value {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.cf-chart-card,
+.cf-calendar-card {
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  margin-bottom: 12px;
+}
+
+.cf-section-head {
+  margin-bottom: 8px;
+}
+
+.cf-section-head h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 2px;
+  color: #1e293b;
+}
+
+.cf-section-sub {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cf-chart-wrap {
+  margin-top: 4px;
+}
+
+.cf-empty-chart {
+  color: #64748b;
+  padding: 40px;
+  text-align: center;
+  margin: 0;
+}
+
+.cf-chart-tooltip {
+  background: #fff;
+  border: 1px solid #d8dee8;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.cf-calendar-head {
+  align-items: flex-start;
+}
+
+.cf-calendar-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.cf-calendar-title-muted {
+  font-weight: 400;
+  color: #64748b;
+}
+
+.cf-calendar-hint {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.cf-calendar-summary {
+  flex-shrink: 0;
+}
+
+/* Codeforces heatmap: blue scale (site-ish) */
+.cf-heatmap-wrap.react-calendar-heatmap text {
+  fill: #64748b;
+}
+
+.cf-heatmap-wrap .cf-hm-empty {
+  fill: #ebeff4;
+}
+
+.cf-heatmap-wrap .cf-hm-1 {
+  fill: #c7e4fc;
+}
+
+.cf-heatmap-wrap .cf-hm-2 {
+  fill: #7eb6eb;
+}
+
+.cf-heatmap-wrap .cf-hm-3 {
+  fill: #3d8fda;
+}
+
+.cf-heatmap-wrap .cf-hm-4 {
+  fill: #1a6bba;
+}
+
+.cf-heatmap-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: #64748b;
+}
+
+.cf-legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}

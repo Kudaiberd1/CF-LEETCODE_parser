@@ -1,4 +1,5 @@
 import apicache from 'apicache';
+import axios from 'axios';
 import cors from 'cors';
 import express, { type NextFunction, type Response } from 'express';
 import rateLimit from 'express-rate-limit';
@@ -118,6 +119,58 @@ app.get('/problems', leetcode.problems);
 //get contests
 app.get('/contests', leetcode.allContests);
 app.get('/contests/upcoming', leetcode.upcomingContests);
+
+// Codeforces aggregate endpoint (avoids browser CORS issues)
+app.get('/codeforces/:handle', async (req, res) => {
+  const { handle } = req.params;
+  if (!handle) {
+    return res.status(400).json({ error: 'Missing handle parameter' });
+  }
+
+  try {
+    const [infoRes, ratingRes, statusRes] = await Promise.all([
+      axios.get('https://codeforces.com/api/user.info', {
+        params: { handles: handle },
+      }),
+      axios.get('https://codeforces.com/api/user.rating', {
+        params: { handle },
+      }),
+      axios.get('https://codeforces.com/api/user.status', {
+        params: { handle, from: 1, count: 10000 },
+      }),
+    ]);
+
+    const infoData = infoRes.data;
+    const ratingData = ratingRes.data;
+    const statusData = statusRes.data;
+
+    if (
+      infoData?.status !== 'OK' ||
+      ratingData?.status !== 'OK' ||
+      statusData?.status !== 'OK'
+    ) {
+      return res.status(404).json({
+        error: 'Codeforces API returned an error',
+        details: {
+          info: infoData?.comment || null,
+          rating: ratingData?.comment || null,
+          status: statusData?.comment || null,
+        },
+      });
+    }
+
+    return res.json({
+      user: infoData.result?.[0] || null,
+      ratingHistory: ratingData.result || [],
+      submissions: statusData.result || [],
+    });
+  } catch (error) {
+    return res.status(502).json({
+      error: 'Failed to fetch Codeforces data',
+      details: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
 
 // Construct options object on all user routes.
 app.use(

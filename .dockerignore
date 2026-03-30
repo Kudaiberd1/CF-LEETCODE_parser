@@ -1,5 +1,7 @@
 node_modules
 dist
+frontend
+cf-heatmap
 .git
 Dockerfile*
 .dockerignore
