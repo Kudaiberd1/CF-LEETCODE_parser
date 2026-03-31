@@ -1,245 +1,217 @@
 # alfa-leetcode-api
 
-REST API around LeetCode’s GraphQL surface, plus a **React dashboard** for **LeetCode** stats and **Codeforces** profiles, and **Docker** recipes to run everything together.
+A LeetCode API wrapper with:
 
-Upstreams the original idea and endpoints from [alfaarghya/alfa-leetcode-api](https://github.com/alfaarghya/alfa-leetcode-api). A hosted demo of the API (may lag this repo) lives at:
+- REST endpoints for profile, submissions, discussions, contests, and problems
+- Codeforces aggregate endpoint (`/codeforces/:handle`)
+- React dashboard (LeetCode + Codeforces tabs)
+- PNG rendering endpoints that capture the live dashboard UI (`/visual/*`)
 
-[https://alfa-leetcode-api.onrender.com/](https://alfa-leetcode-api.onrender.com/)
+## Tech Stack
 
----
+- Backend: Node.js, TypeScript, Express
+- Frontend: React + Vite + Recharts + react-calendar-heatmap
+- Rendering: Puppeteer + headless Chromium
+- Containerization: Docker + Docker Compose
 
-## What’s in this repo
+## Project Structure
 
-| Part | Description |
-|------|-------------|
-| **API** (`src/`) | Express + TypeScript: user profile, calendar, contests, problems, discussions, etc. |
-| **`GET /codeforces/:handle`** | Server-side proxy: merges Codeforces [official API](https://codeforces.com/apiHelp) `user.info`, `user.rating`, and `user.status` (avoids browser CORS when the dashboard calls your backend only). |
-| **Dashboard** (`frontend/`) | Vite + React: LeetCode tab (stats + heatmap) and Codeforces tab (profile-style layout, rating chart, submission heatmap, activity filters). |
-| **Docker** | Production and dev Compose files, plus separate Dockerfiles for API and web. |
+```text
+.
+├─ src/
+│  ├─ app.ts
+│  ├─ routes/
+│  ├─ http/controllers/
+│  ├─ services/
+│  │  ├─ codeforces/
+│  │  └─ leetcode/
+│  ├─ clients/
+│  ├─ middleware/
+│  ├─ visual/
+│  ├─ GQLQueries/
+│  └─ FormatUtils/
+├─ frontend/
+│  ├─ src/
+│  │  ├─ components/
+│  │  ├─ hooks/
+│  │  └─ services/
+│  └─ Dockerfile*
+├─ mcp/
+│  ├─ modules/
+│  └─ adapters/
+├─ Dockerfile
+├─ Dockerfile.dev
+├─ docker-compose.yml
+└─ docker-compose.dev.yml
+```
 
----
+## Run Locally (Node + Vite)
 
-## Requirements
-
-- **Node.js** 20+ (22 used in Docker images)
-- **npm** 10+
-- **Docker** + **Docker Compose** (optional, for containerized runs)
-
----
-
-## Quick start (local, no Docker)
-
-### 1. API
+### 1) Install dependencies
 
 ```bash
 npm install
+cd frontend && npm install
+```
+
+### 2) Start backend (Terminal 1)
+
+From repo root:
+
+```bash
 npm run dev
 ```
 
-Server listens on [http://localhost:3000](http://localhost:3000) unless you set `PORT`.
+Backend default URL: `http://localhost:3000`
 
-Production-style run:
-
-```bash
-npm run build
-npm start
-```
-
-### 2. Dashboard
-
-In another terminal:
+### 3) Start frontend (Terminal 2)
 
 ```bash
 cd frontend
-npm install
 npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173). By default the app calls the API at [http://localhost:3000](http://localhost:3000).
+Frontend default URL: `http://localhost:5173` (or next available port)
 
-To point the UI at another API origin (build or dev):
+## Run with Docker
 
-```bash
-# Linux / macOS
-VITE_API_BASE=http://127.0.0.1:3000 npm run dev
-
-# Windows PowerShell
-$env:VITE_API_BASE="http://127.0.0.1:3000"; npm run dev
-```
-
-`VITE_API_BASE` must be a URL **the browser** can reach (not a Docker-only hostname like `http://api:3000` unless you reverse-proxy).
-
----
-
-## Docker
-
-### Production: API + static dashboard
-
-From the **repository root**:
+### Production-style stack
 
 ```bash
 docker compose up --build
 ```
 
-- **API:** [http://localhost:3000](http://localhost:3000)
-- **Web:** [http://localhost:8080](http://localhost:8080)
+- API: `http://localhost:3000`
+- Web: `http://localhost:8080`
 
-If you open the dashboard from another machine, rebuild the `web` service with the API URL that machine should use:
-
-```bash
-VITE_API_BASE=http://YOUR_SERVER_IP:3000 docker compose up --build
-```
-
-### Development: hot reload
+### Development stack (hot reload)
 
 ```bash
 docker compose -f docker-compose.dev.yml up --build
 ```
 
-- **API:** [http://localhost:3000](http://localhost:3000)
-- **Vite:** [http://localhost:5173](http://localhost:5173)
+- API: `http://localhost:3000`
+- Web (Vite): `http://localhost:5173`
 
-### Dockerfiles
+## Key Endpoints
 
-| File | Purpose |
-|------|---------|
-| `Dockerfile` | Production API (`tsc` → `node dist/index.js`) |
-| `Dockerfile.dev` | Dev API image used by `docker-compose.dev.yml` |
-| `frontend/Dockerfile` | Build SPA + serve with nginx on port 80 |
-| `frontend/Dockerfile.dev` | Vite dev server |
+### Health / discovery
 
-Legacy one-liner (API only, upstream image tag):
+- `GET /` - API overview and route summary
 
-```bash
-docker run -p 3000:3000 alfaarghya/alfa-leetcode-api:2.0.3
-```
+### LeetCode user
 
-For this repo’s full stack, prefer `docker compose` as above.
+- `GET /:username`
+- `GET /:username/profile`
+- `GET /:username/badges`
+- `GET /:username/solved`
+- `GET /:username/contest`
+- `GET /:username/contest/history`
+- `GET /:username/submission?limit=20`
+- `GET /:username/acSubmission?limit=20`
+- `GET /:username/calendar?year=2025`
+- `GET /:username/skill`
+- `GET /:username/language`
+- `GET /:username/progress`
 
----
+### Problems / contests / discussion
 
-## Codeforces proxy endpoint
+- `GET /daily`
+- `GET /daily/raw`
+- `GET /select?titleSlug=two-sum`
+- `GET /select/raw?titleSlug=two-sum`
+- `GET /officialSolution?titleSlug=two-sum`
+- `GET /problems?limit=20&skip=0&difficulty=EASY&tags=array+math`
+- `GET /contests`
+- `GET /contests/upcoming`
+- `GET /trendingDiscuss?first=20`
+- `GET /discussTopic/:topicId`
+- `GET /discussComments/:topicId`
 
-`GET /codeforces/:handle`
+### Codeforces
 
-Returns JSON:
+- `GET /codeforces/:handle`
+  - Returns:
+    - `user`
+    - `ratingHistory`
+    - `submissions`
 
-```json
-{
-  "user": { },
-  "ratingHistory": [ ],
-  "submissions": [ ]
-}
-```
+### PNG snapshots (live dashboard capture)
 
-Errors use `4xx` / `502` with an `error` field. The dashboard uses this route instead of calling Codeforces directly from the browser.
+- `GET /visual/leetcode/:username`
+- `GET /visual/codeforces/:handle?cfMode=all|contest|practice|virtual`
 
----
+Response type: `image/png`  
+Cache header: `Cache-Control: public, max-age=300`
 
-## REST API overview (LeetCode)
+## How PNG Rendering Works
 
-Rate limiting applies in `src/app.ts` (see deployed behavior). During heavy use, prefer running your own instance.
+1. You call `/visual/...` on the API.
+2. Backend launches Puppeteer.
+3. Puppeteer opens the dashboard URL with screenshot query params.
+4. React app loads data from API and marks `#screenshot-capture` ready.
+5. Puppeteer captures that element and returns PNG bytes.
 
-### User
+This guarantees the PNG looks like the same UI you see in the browser.
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /:username` | Profile summary |
-| `GET /:username/profile` | Full profile payload |
-| `GET /:username/badges` | Badges |
-| `GET /:username/solved` | Solved counts |
-| `GET /:username/contest` | Contest summary |
-| `GET /:username/contest/history` | Contest history |
-| `GET /:username/submission` | Recent submissions (`?limit=`) |
-| `GET /:username/acSubmission` | Recent AC (`?limit=`) |
-| `GET /:username/calendar` | Submission calendar (`?year=`) |
-| `GET /:username/skill` | Skill stats |
-| `GET /:username/language` | Language stats |
-| `GET /:username/progress` | Question progress |
+## Environment Variables
 
-### Problems & daily
+### Backend
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /daily`, `GET /daily/raw` | Daily problem |
-| `GET /select`, `GET /select/raw?titleSlug=…` | Problem by slug |
-| `GET /problems` | List (`?limit=`, `?skip=`, `?tags=`, `?difficulty=`) |
-| `GET /officialSolution?titleSlug=…` | Official solution hook |
+- `PORT` (default `3000`)
+- `DASHBOARD_URL`  
+  URL Puppeteer opens to render dashboard UI.
+  - local: `http://localhost:5173` (or your Vite port)
+  - docker prod compose: `http://web:80`
+  - docker dev compose: `http://web:5173`
+- `SCREENSHOT_API_BASE` (default `http://127.0.0.1:3000`)  
+  API base URL used by the dashboard from inside headless browser.
+- `PUPPETEER_EXECUTABLE_PATH`  
+  Optional local override for Chromium path.
 
-### Contests & discussion
+### Frontend
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /contests`, `GET /contests/upcoming` | Contest lists |
-| `GET /trendingDiscuss?first=…` | Trending discussions |
-| `GET /discussTopic/:topicId`, `GET /discussComments/:topicId` | Discussion detail |
+- `VITE_API_BASE`  
+  API URL used by users' browser (not by Puppeteer internal API calls).
 
-`GET /` returns a JSON overview of routes. Demo screenshots for many endpoints are under [public/demo/](public/demo/).
+## MCP Server
 
----
-
-## Dashboard (frontend)
-
-- **LeetCode:** fetch `/:username/profile` and `/:username/calendar`; heatmap follows LeetCode-style submission data (epoch keys in `submissionCalendar`).
-- **Codeforces:** fetch `/codeforces/:handle`; heatmap uses **`creationTimeSeconds`** on submissions; filters: All / Contest / Practice / Virtual.
-
-Stack: React 18, Vite, Recharts, `react-calendar-heatmap`, `react-circular-progressbar`.
-
----
-
-## Scripts (API package)
-
-| Script | Command |
-|--------|---------|
-| Dev API | `npm run dev` |
-| Build | `npm run build` |
-| Start (after build) | `npm start` |
-| Tests | `npm test` |
-| Lint | `npm run lint` |
-
----
-
-## MCP server
-
-This repo includes a Model Context Protocol server under `mcp/`. Build with `npm run build`, then point your MCP client at `dist/mcp/index.js`. Details and example config are unchanged in spirit from earlier docs; see [CONTRIBUTING.md](CONTRIBUTING.md) for workflow.
-
-Example client snippet:
-
-```json
-{
-  "mcpServers": {
-    "leetcode-suite": {
-      "command": "node",
-      "args": ["/absolute/path/to/alfa-leetcode-api/dist/mcp/index.js"]
-    }
-  }
-}
-```
-
-Inspector (after build):
+Run MCP tools via:
 
 ```bash
-npx @modelcontextprotocol/inspector node /absolute/path/to/alfa-leetcode-api/dist/mcp/index.js
+npm run mcp
 ```
 
----
+MCP module modes:
 
-## Contributing
+- `all`
+- `users`
+- `problems`
+- `discussions`
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+## Build
 
----
+From repo root:
+
+```bash
+npm run build
+cd frontend && npm run build
+```
+
+## Troubleshooting
+
+- `ERR_CONNECTION_REFUSED` on `/visual/...`  
+  `DASHBOARD_URL` is not reachable from backend process/container.
+
+- `/visual/...` returns error JSON instead of PNG  
+  Dashboard failed to load or fetch data (check backend logs and URL env vars).
+
+- Frontend loads but API calls fail in browser  
+  `VITE_API_BASE` is incorrect for your machine/network.
+
+- Puppeteer launch fails on local machine  
+  Install Chromium and set `PUPPETEER_EXECUTABLE_PATH`.
 
 ## License
 
-[MIT](LICENSE)
-
----
-
-## Authors & contributors
-
-Original author: [@alfaarghya](https://github.com/alfaarghya)
-
-Past contributions (from upstream history) include work by [@aryanpingle](https://github.com/aryanpingle), [@jamesh48](https://github.com/jamesh48), [@kvqn](https://github.com/kvqn), [@changchunlei](https://github.com/changchunlei), [@merakesh99](https://github.com/merakesh99), [@Ayushman2004](https://github.com/Ayushman2004), [@ajchili](https://github.com/ajchili), [@theinit01](https://github.com/theinit01), [@123xylem](https://github.com/123xylem), [@P-M-Manmohan](https://github.com/P-M-Manmohan), [@Ahmed-Armaan](https://github.com/Ahmed-Armaan), [@devroopsaha744](https://github.com/devroopsaha744), and others listed in previous README revisions.
-
-Connect: [LinkedIn](https://linkedin.com/in/alfaarghya) · [LeetCode](https://leetcode.com/alfaarghya/)
+ISC

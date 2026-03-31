@@ -1,21 +1,25 @@
-# Production image: LeetCode API + Codeforces proxy (Express)
-FROM node:22-alpine AS base
+# Production image: API runtime with system Chromium for Puppeteer
+FROM node:22-alpine AS build
 WORKDIR /app
-
-FROM base AS deps
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 COPY package.json package-lock.json ./
 RUN npm ci
-
-FROM base AS build
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN npm run build && npm prune --omit=dev
 
-FROM base AS runner
+FROM node:22-alpine AS runner
+WORKDIR /app
 ENV NODE_ENV=production
-COPY package.json package-lock.json ./
-# Skip prepare/husky (dev-only); production has no devDependencies
-RUN npm ci --omit=dev --ignore-scripts && npm cache clean --force
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont
+COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 EXPOSE 3000
 CMD ["node", "dist/index.js"]
