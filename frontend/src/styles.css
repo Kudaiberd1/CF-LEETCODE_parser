@@ -218,6 +218,14 @@ p {
   font-weight: 500;
 }
 
+.badge-icon {
+  display: flex;
+  height: 80px;
+  padding-top: 5px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .calendar-card h3 {
   font-size: 26px;
   font-weight: 500;

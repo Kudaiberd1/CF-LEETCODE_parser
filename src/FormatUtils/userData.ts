@@ -66,7 +66,7 @@ export const formatSubmissionCalendarData = (data: UserData) => ({
   activeYears: data.matchedUser.userCalendar.activeYears,
   streak: data.matchedUser.userCalendar.streak,
   totalActiveDays: data.matchedUser.userCalendar.totalActiveDays,
-  dccBadges: data.matchedUser.userCalendar.dccBadge,
+  dccBadges: data.matchedUser.userCalendar.dccBadges,
   submissionCalendar: data.matchedUser.userCalendar.submissionCalendar,
 });
 

@@ -33,6 +33,7 @@ export default function App() {
       <LeetCodeDashboard
         profile={dashboardData.profile}
         calendar={dashboardData.calendar}
+        badges={dashboardData.badges}
         heatmapValues={dashboardData.heatmapValues}
         totalYearSubmissions={dashboardData.totalYearSubmissions}
         lineData={dashboardData.lc.lineData}

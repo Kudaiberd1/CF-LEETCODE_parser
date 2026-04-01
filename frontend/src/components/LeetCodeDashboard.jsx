@@ -5,6 +5,7 @@ import { Bar, BarChart, CartesianGrid, Line, LineChart, ResponsiveContainer, Too
 export default function LeetCodeDashboard({
   profile,
   calendar,
+  badges,
   heatmapValues,
   totalYearSubmissions,
   lineData,
@@ -16,45 +17,6 @@ export default function LeetCodeDashboard({
 }) {
   return (
     <>
-      <div className="grid top-grid">
-        <div className="card rating-card">
-          <div className="metrics-row">
-            <div>
-              <p className="label">Contest Rating</p>
-              <h2>{Math.round(profile.ranking || 0).toLocaleString()}</h2>
-            </div>
-            <div>
-              <p className="label">Global Ranking</p>
-              <h3>{`${Math.round(profile.ranking || 0).toLocaleString()}/858,465`}</h3>
-            </div>
-            <div>
-              <p className="label">Attended</p>
-              <h3>3</h3>
-            </div>
-          </div>
-          <div className="chart-wrap">
-            <ResponsiveContainer width="100%" height={90}>
-              <LineChart data={lineData}>
-                <CartesianGrid stroke="#f8fafc" vertical={false} />
-                <XAxis dataKey="name" tickLine={false} axisLine={false} tick={{ fill: "#94a3b8", fontSize: 11 }} />
-                <YAxis hide />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#f59e0b" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-        <div className="card top-card">
-          <p className="label">Top</p>
-          <h2>{percentile}%</h2>
-          <ResponsiveContainer width="100%" height={90}>
-            <BarChart data={histogramData}>
-              <Bar dataKey="value" radius={[3, 3, 0, 0]} fill="#e5e7eb" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
       <div className="grid middle-grid">
         <div className="card solved-card">
           <div className="gauge-wrap">
@@ -88,9 +50,17 @@ export default function LeetCodeDashboard({
         </div>
         <div className="card badge-card">
           <p className="label">Badges</p>
-          <h2>{calendar.dccBadges?.badges?.length || 0}</h2>
-          <p className="muted">Locked Badge</p>
-          <h4>Mar LeetCoding Challenge</h4>
+          <h2>{badges?.badgesCount ?? 0}</h2>
+          <div className="badge-icons" style={{ display: 'flex', height: '80px'}}>
+            {badges?.badges?.slice(0, 3).map((badge) => (
+              <img
+                key={badge.name}
+                src={badge.icon}
+                alt={badge.name}
+                className="badge-icon"
+              />
+            ))}
+          </div>
         </div>
       </div>
 

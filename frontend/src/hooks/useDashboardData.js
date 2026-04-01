@@ -30,6 +30,7 @@ export function useDashboardData({ apiBase, platform, query, cfMode }) {
   const [profile, setProfile] = useState(null);
   const [calendar, setCalendar] = useState(null);
   const [cfData, setCfData] = useState(null);
+  const [badges, setBadges] = useState(null);
 
   useEffect(() => {
     async function loadData() {
@@ -40,12 +41,14 @@ export function useDashboardData({ apiBase, platform, query, cfMode }) {
           const lcData = await fetchLeetCodeDashboard(apiBase, query);
           setProfile(lcData.profile);
           setCalendar(lcData.calendar);
+          setBadges(lcData.badges);
           setCfData(null);
         } else {
           const nextCfData = await fetchCodeforcesDashboard(apiBase, query);
           setCfData(nextCfData);
           setProfile(null);
           setCalendar(null);
+          setBadges(null);
         }
       } catch (err) {
         setError(err?.message || "Something went wrong");
@@ -112,6 +115,7 @@ export function useDashboardData({ apiBase, platform, query, cfMode }) {
     error,
     profile,
     calendar,
+    badges,
     cfData,
     heatmapValues,
     totalYearSubmissions,

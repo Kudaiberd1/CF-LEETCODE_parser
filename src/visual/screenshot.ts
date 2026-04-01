@@ -32,7 +32,7 @@ export async function captureLiveDashboardPng(opts: {
   cfMode?: string;
 }): Promise<Buffer> {
   const dashboardBase = (
-    process.env.DASHBOARD_URL || 'http://127.0.0.1:8080'
+    process.env.DASHBOARD_URL || 'http://localhost:5174'
   ).replace(/\/$/, '');
   const apiBase = (
     process.env.SCREENSHOT_API_BASE || 'http://127.0.0.1:3000'

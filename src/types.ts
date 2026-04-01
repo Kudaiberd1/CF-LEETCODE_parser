@@ -28,7 +28,7 @@ interface MatchedUser {
     activeYears: number[];
     streak: number;
     totalActiveDays: number;
-    dccBadge: {
+    dccBadges: {
       timestamp: number;
       badge: {
         name: string;
